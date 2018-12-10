@@ -6,11 +6,12 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-public class ScreenFilterService extends Service {
+public class ScreenFilterService extends Service implements KeyEvent.Callback{
 
 
     private SharedMemory mSharedMemory;
@@ -58,5 +59,31 @@ public class ScreenFilterService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         mView.setBackgroundColor(mSharedMemory.getColor());
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public boolean onKeyDown(int i, KeyEvent keyEvent) {
+        Log.d("asdf","SOMETHING HAPPENED");
+        return true;
+    }
+
+    @Override
+    public boolean onKeyLongPress(int i, KeyEvent keyEvent) {
+        return false;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_D :
+                Log.d("KeyPress", "D");
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onKeyMultiple(int i, int i1, KeyEvent keyEvent) {
+        return false;
     }
 }
