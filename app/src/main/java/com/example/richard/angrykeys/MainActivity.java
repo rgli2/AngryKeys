@@ -20,10 +20,9 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String BROADCAST = "angrykeys.android.action.broadcast";
     private SharedMemory mSharedMemory;
     private Switch mSwitch;
-    private CountDownTimer mCountDownTimer;
+    private static boolean filterOn = false;
     private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
@@ -41,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             Log.d("CREATION", "onCreate() executed");
-            IntentFilter intentFilter = new IntentFilter(BROADCAST);
-            registerReceiver(myReceiver , intentFilter);
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
             final TextView tv2 = (TextView) findViewById(R.id.textView2);
@@ -80,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent i = new Intent(MainActivity.this, ScreenFilterService.class);
                     boolean state = !mSwitch.isChecked();
                     if (state) {
+                        filterOn = false;
                         stopService(i);
                     } else {
                         mSharedMemory.setRed(255);
@@ -91,13 +89,18 @@ public class MainActivity extends AppCompatActivity {
                                         Uri.parse("package:" + getPackageName()));
                                 startActivityForResult(intent, 1234);
                             } else {
+                                filterOn = true;
                                 startService(i);
                             }
                         } else {
+                            filterOn = true;
                             startService(i);
                         }
                     }
                 }
             });
+        }
+        public boolean filterOn() {
+            return filterOn;
         }
     }
