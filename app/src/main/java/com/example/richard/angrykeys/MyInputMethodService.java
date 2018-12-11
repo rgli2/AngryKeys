@@ -22,9 +22,9 @@ import org.json.JSONObject;
 import java.lang.StringBuilder;
 
 public class MyInputMethodService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
-    private static final int ANGER_INCREASE = 15;
-    private static final int NEUTRAL_COOLDOWN = -3;
-    private static final int POSITIVE_COOLDOWN = -9;
+    private static final int ANGER_INCREASE = 30;
+    private static final int NEUTRAL_COOLDOWN = -6;
+    private static final int POSITIVE_COOLDOWN = -21;
     private KeyboardView keyboardView;
     private Keyboard keyboard;
     private int wordsInBuffer;
