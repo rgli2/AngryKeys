@@ -1,9 +1,11 @@
 package com.example.richard.angrykeys;
 
+import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputConnection;
@@ -13,6 +15,10 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
 
     private KeyboardView keyboardView;
     private Keyboard keyboard;
+    private int wordsInBuffer;
+    private StringBuilder buffer = new StringBuilder();
+    private SharedMemory mSharedMemory;
+    private int anger = 0;
 
     private boolean caps = false;
 
@@ -65,12 +71,54 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
                         code = Character.toUpperCase(code);
                     }
                     inputConnection.commitText(String.valueOf(code), 1);
+                    buffer.append(code);
+                    if (Character.toString(code).equals(" ")) {
+                        wordsInBuffer++;
+                        if (wordsInBuffer >= 15) {
+                            sendThought();
+                        }
+                    }
+                    if (code == '.'
+                            || code == '?'
+                            || code == '!') {
+                        sendThought();
+                    }
+
 
             }
         }
 
     }
 
+    public int analyzeSentiment(String input) {
+
+        int sentimentScore = 10;
+        return sentimentScore;
+    }
+
+    public void sendThought() {
+        String thought = buffer.toString();
+        Log.d("Thought", thought);
+        wordsInBuffer = 0;
+        buffer = new StringBuilder();
+        if (!MainActivity.filterOn()) {
+            return;
+        }
+        anger += analyzeSentiment(thought);
+        Intent i = new Intent(MyInputMethodService.this, ScreenFilterService.class);
+        mSharedMemory = new SharedMemory(this);
+        mSharedMemory.setRed(255);
+        mSharedMemory.setGreen(0);
+        mSharedMemory.setBlue(0);
+        if (anger < 0) {
+            anger = 0;
+        }
+        if (anger > MainActivity.getMaxRed()) {
+            anger = MainActivity.getMaxRed();
+        }
+        mSharedMemory.setAlpha(anger);
+        startService(i);
+    }
 
     @Override
     public void onText(CharSequence charSequence) {

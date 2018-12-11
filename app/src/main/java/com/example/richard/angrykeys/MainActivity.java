@@ -23,6 +23,13 @@ public class MainActivity extends AppCompatActivity {
     private SharedMemory mSharedMemory;
     private Switch mSwitch;
     private static boolean filterOn = false;
+    private static int maxRed = 0;
+
+    public static int getMaxRed() {
+        return maxRed;
+    }
+
+    /**
     private final BroadcastReceiver myReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
@@ -36,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     };
+     */
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
             SeekBar sb1 = (SeekBar) findViewById(R.id.seekBar);
             tv2.setText("0");
             sb1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                Intent i = new Intent(MainActivity.this, ScreenFilterService.class);
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
+                    stopService(i);
                 }
 
                 @Override
@@ -60,12 +70,13 @@ public class MainActivity extends AppCompatActivity {
                     //---change the font size of the EditText---
                     tv2.setText(String.valueOf(progress));
                     if (mSwitch.isChecked()) {
-                        Intent i = new Intent(MainActivity.this, ScreenFilterService.class);
                         //stopService(i);
                         mSharedMemory.setAlpha(progress * 255 / 100);
                         startService(i);
+                        maxRed = progress * 255 / 100;
                     }
                     mSharedMemory.setAlpha(progress * 255 / 100);
+                    maxRed = progress * 255 / 100;
                 }
             });
             mSwitch = findViewById(R.id.switch1);
@@ -80,9 +91,11 @@ public class MainActivity extends AppCompatActivity {
                         filterOn = false;
                         stopService(i);
                     } else {
+                        /**
                         mSharedMemory.setRed(255);
                         mSharedMemory.setGreen(0);
                         mSharedMemory.setBlue(0);
+                         */
                         if (Build.VERSION.SDK_INT >= 23) {
                             if (!Settings.canDrawOverlays(MainActivity.this)) {
                                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -90,17 +103,17 @@ public class MainActivity extends AppCompatActivity {
                                 startActivityForResult(intent, 1234);
                             } else {
                                 filterOn = true;
-                                startService(i);
+                                //startService(i);
                             }
                         } else {
                             filterOn = true;
-                            startService(i);
+                            //startService(i);
                         }
                     }
                 }
             });
         }
-        public boolean filterOn() {
+        public static boolean filterOn() {
             return filterOn;
         }
     }
