@@ -22,7 +22,9 @@ import org.json.JSONObject;
 import java.lang.StringBuilder;
 
 public class MyInputMethodService extends InputMethodService implements KeyboardView.OnKeyboardActionListener {
-
+    private static final int ANGER_INCREASE = 15;
+    private static final int NEUTRAL_COOLDOWN = -3;
+    private static final int POSITIVE_COOLDOWN = -9;
     private KeyboardView keyboardView;
     private Keyboard keyboard;
     private int wordsInBuffer;
@@ -77,7 +79,7 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
                     break;
                 case Keyboard.KEYCODE_DONE:
                     inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-
+                    sendThought();
                     break;
                 default :
                     char code = (char) primaryCode;
@@ -118,15 +120,15 @@ public class MyInputMethodService extends InputMethodService implements Keyboard
         Log.d("Thingy", Character.toString(identifier));
         switch (identifier) {
             case 's':
-                addAnger(-8);
+                addAnger(POSITIVE_COOLDOWN);
                 Log.d("Switching", "positive");
                 break;
             case 'u':
-                addAnger(-3);
+                addAnger(NEUTRAL_COOLDOWN);
                 Log.d("Switching", "neutral");
                 break;
             case 'g':
-                addAnger(10);
+                addAnger(ANGER_INCREASE);
                 Log.d("Switching", "negative");
                 break;
             default:
