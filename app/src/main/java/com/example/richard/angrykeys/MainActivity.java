@@ -116,4 +116,8 @@ public class MainActivity extends AppCompatActivity {
         public static boolean filterOn() {
             return filterOn;
         }
+
     }
+/**
+ http://api.datumbox.com/1.0/SentimentAnalysis.json?api_key=ce30c2175b219dc10f252483d6b0b632&text=eat my ass
+ */
