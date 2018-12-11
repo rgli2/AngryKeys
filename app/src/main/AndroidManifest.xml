@@ -26,10 +26,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver
-            android:name=".KeyboardReciever"
-            android:enabled="true"
-            android:exported="true"></receiver>
         <service
             android:name=".MyInputMethodService"
             android:label="Keyboard Display Name"
